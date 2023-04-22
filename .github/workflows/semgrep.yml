@@ -1,0 +1,36 @@
+name: Semgrep
+
+on:
+  push:
+    branches:
+    - main
+jobs:
+  my_job:
+    name: Semgrep
+    runs-on: ubuntu-18.04
+    container:
+      image: returntocorp/semgrep
+      
+    steps:
+    
+    - name: clone application source code
+      uses: actions/checkout@v3
+    
+    - name: full scan
+      run: |
+        semgrep \
+          --sarif --output report.sarif \
+          --metrics=off \
+          --config=p/default \
+          --config=p/python \
+          --config=p/owasp-top-ten \
+          --config=p/cwe-top-25 \
+          --config=p/r2c-best-practices
+          
+  
+
+    - name: Save report as pipeline artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: report.sarif
+        path: report.sarif        
