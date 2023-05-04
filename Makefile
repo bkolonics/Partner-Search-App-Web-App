@@ -3,7 +3,7 @@ default: build createdb run
 
 run:
 	@echo "Running final.py"
-	. venv/bin/activate && python3 -m final
+	. venv/bin/activate && streamlit run final.py
 
 
 createdb:
