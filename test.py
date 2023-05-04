@@ -30,7 +30,7 @@ class TestCreateDB(unittest.TestCase):
         test_df = pd.DataFrame({'A': ['D'], 'B': ['E'], 'C': ['F']})
         excel_to_dataframe = createdb.excel_to_dataframe('test_assets/test_excel.xlsx',
                         sheet_name='Feuil1')
-        self.assertFalse(excel_to_dataframe.equals(test_df))
+        self.assertTrue(excel_to_dataframe.equals(test_df))
 
     def test_dataframe_to_sql(self):
         """
