@@ -37,7 +37,6 @@ class TestCreateDB(unittest.TestCase):
         Test the content of the output of the function dataframe_to_sql
         Not yet implemented
         """
-        pass
 
 if __name__ == '__main__':
     unittest.main()
