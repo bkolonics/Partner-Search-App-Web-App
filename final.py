@@ -3,6 +3,8 @@ This module validates the country acronym.
 TODO: Add more here
 """
 import createdb
+import sqlite3
+import streamlit as st
 
 def validate_country_acronym(aconym: str) -> str:
     """function valideates country acronym"""
@@ -15,5 +17,28 @@ def validate_country_acronym(aconym: str) -> str:
 
     return aconym
 
+def extract_countries_from_db() -> list:
+    """function extracts countries from db"""
+    conn = sqlite3.connect('ecsel_database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT Acronym FROM Countries")
+    countries = cursor.fetchall()
+    countries = [item[0] for item in countries]
+    conn.close()
+    return countries
+
+def country_anagram_to_full_name(anagram: str) -> str:
+    """function maps countries anagram to full name"""
+    conn = sqlite3.connect('ecsel_database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT Country FROM countries WHERE Acronym = ?", (anagram,))
+    full_name = cursor.fetchall()
+    full_name = [item[0] for item in full_name]
+    conn.close()
+    return full_name[0]
+
+
 if __name__ == '__main__':
-    print(validate_country_acronym('FR'))
+    st.title("Partner Search App")
+    st.write("Antoine Colinet & Bence Kolonics")
+    st.selectbox("Choose a country :", map(lambda x: country_anagram_to_full_name(x), extract_countries_from_db()))
