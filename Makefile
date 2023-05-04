@@ -1,12 +1,27 @@
 
+default: build createdb run
 
+run:
+	@echo "Running final.py"
+	. venv/bin/activate && python3 -m final
 
 
 createdb:
 	@echo "Creating database..."
-	python3 -m createdb
+	. venv/bin/activate && python3 -m createdb
 
 
-test:
+test: build
 	@echo "Running tests..."
-	python3 -m unittest discover -v
+	. venv/bin/activate && python3 -m unittest discover -v
+
+clean:
+	@echo "Cleaning up"
+	rm -f ecsel_database.db
+	rm -rf venv
+
+build:
+	@echo "Creating venv"
+	test -d venv || python3 -m venv venv
+	@echo "Installing requirements..."
+	. venv/bin/activate && pip install -r requirements.txt
