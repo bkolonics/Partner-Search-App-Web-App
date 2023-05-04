@@ -8,9 +8,9 @@ def excel_to_dataframe(file: str, **kwargs: str) -> pd.DataFrame:
 def dataframe_to_sql(file: str, table: str, **kwargs: str):
     conn = sq.connect('ecsel_database.db')
     return file.to_sql(table, conn, if_exists='replace')
- 
+
 if __name__ == '__main__':
-    
+
     dataframe_to_sql(excel_to_dataframe('assets/projects.xlsx',
                     sheet_name='Sheet1'), 'pojects')
     dataframe_to_sql(excel_to_dataframe('assets/participants.xlsx',
