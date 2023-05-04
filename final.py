@@ -42,5 +42,5 @@ def country_anagram_to_full_name(anagram: str) -> str:
 if __name__ == '__main__':
     st.title("Partner Search App")
     st.write("Antoine Colinet & Bence Kolonics")
-    st.selectbox("Choose a country :", map(country_anagram_to_full_name, 
+    st.selectbox("Choose a country :", map(country_anagram_to_full_name,
                                            extract_countries_from_db()))
