@@ -5,7 +5,6 @@ run:
 	@echo "Running final.py"
 	. venv/bin/activate && streamlit run final.py
 
-
 createdb:
 	@echo "Creating database..."
 	. venv/bin/activate && python3 -m createdb
