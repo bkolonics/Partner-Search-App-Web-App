@@ -1,3 +1,7 @@
+"""
+This module validates the country acronym.
+TODO: Add more here
+"""
 import createdb
 
 def validate_country_acronym(aconym: str) -> str:
