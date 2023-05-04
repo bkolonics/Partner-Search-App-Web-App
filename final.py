@@ -10,3 +10,6 @@ def validate_country_acronym(aconym: str) -> str:
         raise ValueError("Country acronym not in list of countries")
 
     return aconym
+
+if __name__ == '__main__':
+    print(validate_country_acronym('FR'))
