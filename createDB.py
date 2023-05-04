@@ -1,3 +1,12 @@
+"""
+This module creates the database and tables for the ECSEL project.
+The database is created in the same directory as the module.
+The database is called ecsel_database.db
+The tables are created from the excel files in the assets folder.
+The excel files are converted to dataframes and then to sql tables.
+The tables are called projects, participants and countries.
+"""
+
 import sqlite3 as sq
 import pandas as pd
 
@@ -6,6 +15,7 @@ def excel_to_dataframe(file: str, **kwargs: str) -> pd.DataFrame:
     return pd.read_excel(file, **kwargs)
 
 def dataframe_to_sql(file: str, table: str, **kwargs: str):
+    """Converts dataframe to sql table"""
     conn = sq.connect('ecsel_database.db')
     return file.to_sql(table, conn, if_exists='replace')
 
