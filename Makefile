@@ -23,4 +23,4 @@ build:
 	@echo "Creating venv"
 	test -d venv || python3 -m venv venv
 	@echo "Installing requirements..."
-	. venv/bin/activate && pip install -r requirements.txt
+	. venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
