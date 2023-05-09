@@ -56,6 +56,21 @@ def generate_dataframe(country: str) -> pd.DataFrame:
     conn.close()
     return df_participants
 
+def generate_dataframe_project_coordinators(country: str) -> pd.DataFrame:
+    """function generates dataframe"""
+    conn = sqlite3.connect('ecsel_database.db')
+    query = """SELECT shortName, name, activityType, projectAcronym
+               FROM participants
+               WHERE country = ? AND role = 'coordinator'"""
+    df_participants = pd.read_sql(query, conn, params=(country,))
+    df_participants = df_participants.sort_values(by=['shortName'], ascending=True)
+    df_participants = df_participants.rename(columns={'shortName': 'Short Name',
+                                                        'name': 'Name',
+                                                        'activityType': 'Activity Type',
+                                                        'projectAcronym': 'Project Acronym'})
+    conn.close()
+    return df_participants
+
 if __name__ == '__main__':
     st.set_page_config(page_title="Partner Search App", page_icon="assets/logo-ecsel.png")
     st.image("assets/kdtju.png")
@@ -66,3 +81,7 @@ if __name__ == '__main__':
 
     st.subheader(f"Participants in {country_anagram_to_full_name(selected_country)}")
     st.dataframe(generate_dataframe(selected_country), use_container_width=True)
+
+    st.subheader(f"Project Coordinators in {country_anagram_to_full_name(selected_country)}")
+    st.dataframe(generate_dataframe_project_coordinators(selected_country),
+                 use_container_width=True)
