@@ -1,6 +1,8 @@
 """
-This module validates the country acronym.
-TODO: Add more here
+This module contains the main code of the Partner Search App.
+It is a Streamlit app that allows the user to select a country
+and displays the participants from that country in a table.
+The tables can be downloaded as a CSV files.
 """
 import sqlite3
 import streamlit as st
