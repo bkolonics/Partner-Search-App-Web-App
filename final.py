@@ -8,7 +8,7 @@ import pandas as pd
 import altair as alt
 import createdb
 
-
+@st.cache_resource
 def validate_country_acronym(aconym: str) -> str:
     """function valideates country acronym"""
     if len(aconym) != 2:
@@ -30,6 +30,7 @@ def extract_countries_from_db() -> list:
     conn.close()
     return countries
 
+@st.cache_resource
 def country_anagram_to_full_name(anagram: str) -> str:
     """function maps countries anagram to full name"""
     conn = sqlite3.connect('ecsel_database.db')
@@ -40,6 +41,7 @@ def country_anagram_to_full_name(anagram: str) -> str:
     conn.close()
     return full_name[0]
 
+@st.cache_data
 def generate_dataframe(country: str) -> pd.DataFrame:
     """function generates dataframe for participants and orders by grants"""
     conn = sqlite3.connect('ecsel_database.db')
@@ -131,6 +133,7 @@ if __name__ == '__main__':
         tooltip=['Country', 'Grants']
     ).interactive()
 
+    st.subheader("Top 10 Countries Graph")
     st.altair_chart(chart, use_container_width=True)
 
     st.download_button(label="Download Top 10 Countries as CSV",
