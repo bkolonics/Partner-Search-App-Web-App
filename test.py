@@ -121,9 +121,58 @@ class TestFinal(unittest.TestCase):
 
         input_df.to_sql('participants', conn, if_exists='replace', index=False)
         generate_dataframe = final.generate_dataframe('FR')
-        print(generate_dataframe)
-        print(input_df)
         self.assertTrue(generate_dataframe.equals(expected_df))
+        generate_dataframe = final.generate_dataframe('XY')
+        self.assertFalse(generate_dataframe.equals(expected_df))
+        conn.execute("DROP TABLE participants")
+        conn.commit()
+        conn.close()
+
+
+
+    @patch("final.DATABASE", FAKE_DATABASE)
+    def test_generate_dataframe_10_most_active_countries(self):
+        """
+        Test the content of the output of the function generate_dataframe_10_most_active_countries
+        """
+        conn = sq.connect(FAKE_DATABASE)
+# pylint: disable=C0301
+        input_df = pd.DataFrame({'country': ['FR', 'DE', 'IT', 'ES', 'PL', 'UK', 'NL', 'BE', 'SE', 'AT', 'HU'],
+                                'ecContribution': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]})
+        expected_df = pd.DataFrame({'Country': ['DE', 'IT', 'ES', 'PL', 'UK', 'NL', 'BE', 'SE', 'AT', 'HU'],
+                                    'Grants': [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]})
+        expected_df = expected_df.iloc[::-1]
+        expected_df = expected_df.reset_index(drop=True)
+        input_df.to_sql('participants', conn, if_exists='replace', index=False)
+        generate_dataframe_10_most_active_countries = final.generate_dataframe_10_most_active_countries()
+# pylint: enable=C0301
+        self.assertTrue(generate_dataframe_10_most_active_countries.equals(expected_df))
+        conn.execute("DROP TABLE participants")
+        conn.commit()
+        conn.close()
+
+    @patch("final.DATABASE", FAKE_DATABASE)
+    def test_generate_dataframe_project_coordinators(self):
+        """
+        Test the content of the output of the function generate_dataframe_project_coordinators
+        """
+# pylint: disable=C0301
+        conn = sq.connect(FAKE_DATABASE)
+        input_df = pd.DataFrame({'shortName': ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+                                 'name': ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+                                    'activityType': ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+                                    'projectAcronym': ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+                                    'country': ['FR', 'DE', 'IT', 'ES', 'PL', 'UK', 'NL', 'BE', 'SE', 'AT'],
+                                    'role': ['coordinator', 'Partner', 'Partner', 'Partner', 'Partner', 'Partner', 'Partner', 'Partner', 'Partner', 'Partner']})
+        expected_df = pd.DataFrame({'Short Name': ['A'],
+                                    'Name': ['A'],
+                                    'Activity Type': ['G'],
+                                    'Project Acronym': ['A'],
+                                    })
+# pylint: enable=C0301
+        input_df.to_sql('participants', conn, if_exists='replace', index=False)
+        generate_dataframe_project_coordinators = final.generate_dataframe_project_coordinators("FR") # pylint: disable=C0301
+        self.assertTrue(generate_dataframe_project_coordinators.equals(expected_df))
         conn.execute("DROP TABLE participants")
         conn.commit()
         conn.close()
