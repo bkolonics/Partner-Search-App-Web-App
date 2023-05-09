@@ -39,7 +39,7 @@ def country_anagram_to_full_name(anagram: str) -> str:
     conn.close()
     return full_name[0]
 
-def generate_dataframe(country: str) -> list:
+def generate_dataframe(country: str) -> pd.DataFrame:
     """function generates dataframe"""
     conn = sqlite3.connect('ecsel_database.db')
     df = pd.read_sql("SELECT shortName, name, activityType, organizationURL, SUM(ecContribution) FROM participants WHERE country = ? GROUP BY shortName", conn, params=(country,))
