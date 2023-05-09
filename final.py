@@ -40,7 +40,7 @@ def country_anagram_to_full_name(anagram: str) -> str:
     return full_name[0]
 
 def generate_dataframe(country: str) -> pd.DataFrame:
-    """function generates dataframe"""
+    """function generates dataframe for participants and orders by grants"""
     conn = sqlite3.connect('ecsel_database.db')
     query = """SELECT shortName, name, activityType, organizationURL, SUM(ecContribution)
                FROM participants
@@ -57,7 +57,7 @@ def generate_dataframe(country: str) -> pd.DataFrame:
     return df_participants
 
 def generate_dataframe_project_coordinators(country: str) -> pd.DataFrame:
-    """function generates dataframe"""
+    """function generates dataframe for project coordinators"""
     conn = sqlite3.connect('ecsel_database.db')
     query = """SELECT shortName, name, activityType, projectAcronym
                FROM participants
