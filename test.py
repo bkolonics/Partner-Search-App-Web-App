@@ -4,9 +4,14 @@ Python module to test all the function in every module of the project
 
 
 import unittest
+import unittest.mock as mock
+from unittest.mock import patch
 import pandas as pd
 import createdb
 import final
+import sqlite3 as sq
+
+FAKE_DATABASE = 'test_assets/fake_database.db'
 
 class TestCreateDB(unittest.TestCase):
     """
@@ -33,11 +38,17 @@ class TestCreateDB(unittest.TestCase):
                         sheet_name='Feuil1')
         self.assertTrue(excel_to_dataframe.equals(test_df))
 
+    @patch("createdb.DATABASE", FAKE_DATABASE)
     def test_dataframe_to_sql(self):
         """
         Test the content of the output of the function dataframe_to_sql
-        Not yet implemented
         """
+        test_df = pd.DataFrame({'A': ['D'], 'B': ['E'], 'C': ['F']})
+        dataframe_to_sql = createdb.dataframe_to_sql(test_df, 'test_table')
+        conn = sq.connect(FAKE_DATABASE)
+        sql_to_dataframe = pd.read_sql_query("SELECT * FROM test_table", conn)
+        sql_to_dataframe = sql_to_dataframe.drop(columns=['index'])
+        self.assertTrue(test_df.equals(sql_to_dataframe))
 
 class TestFinal(unittest.TestCase):
     """

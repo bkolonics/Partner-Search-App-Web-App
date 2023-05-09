@@ -18,6 +18,8 @@ clean:
 	@echo "Cleaning up"
 	rm -f ecsel_database.db
 	rm -rf venv
+	rm -f test_assets/fake_database.db
+	rm -rf __pycache__
 
 build:
 	@echo "Creating venv"

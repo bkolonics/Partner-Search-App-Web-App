@@ -10,13 +10,15 @@ The tables are called projects, participants and countries.
 import sqlite3 as sq
 import pandas as pd
 
+DATABASE = 'ecsel_database.db'
+
 def excel_to_dataframe(file: str, **kwargs: str) -> pd.DataFrame:
     """Converts excel file to dataframe"""
     return pd.read_excel(file, **kwargs)
 
 def dataframe_to_sql(file: str, table: str) -> int:
     """Converts dataframe to sql table"""
-    conn = sq.connect('ecsel_database.db')
+    conn = sq.connect(DATABASE)
     return file.to_sql(table, conn, if_exists='replace')
 
 if __name__ == '__main__':
