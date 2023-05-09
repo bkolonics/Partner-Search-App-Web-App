@@ -1,4 +1,4 @@
 .DS_Store
-*.db
+test_assets/fake_database.db
 venv
 __pycache__
