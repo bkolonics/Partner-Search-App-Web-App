@@ -101,5 +101,33 @@ class TestFinal(unittest.TestCase):
         conn.close()
 
 
+    @patch("final.DATABASE", FAKE_DATABASE)
+    def test_generate_dataframe(self):
+        """
+        Test the content of the output of the function generate_dataframe
+        """
+        conn = sq.connect(FAKE_DATABASE)
+        input_df = pd.DataFrame({'shortName': ['A'],
+                                'Name': ['D'],
+                                'activityType': ['G'],
+                                'organizationURL': ['J'],
+                                'country': ['FR'],
+                                'ecContribution': [1]})
+        expected_df = pd.DataFrame({'Short Name': ['A'],
+                                    'Name': ['D'],
+                                    'Activity Type': ['G'],
+                                    'Organization URL': ['J'],
+                                    'Grants': [1]})
+
+        input_df.to_sql('participants', conn, if_exists='replace', index=False)
+        generate_dataframe = final.generate_dataframe('FR')
+        print(generate_dataframe)
+        print(input_df)
+        self.assertTrue(generate_dataframe.equals(expected_df))
+        conn.execute("DROP TABLE participants")
+        conn.commit()
+        conn.close()
+
+
 if __name__ == '__main__':
     unittest.main()
