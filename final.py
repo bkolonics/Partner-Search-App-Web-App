@@ -10,6 +10,8 @@ import pandas as pd
 import altair as alt
 import createdb
 
+DATABASE = 'ecsel_database.db'
+
 @st.cache_resource
 def validate_country_acronym(aconym: str) -> str:
     """function valideates country acronym"""
@@ -24,7 +26,7 @@ def validate_country_acronym(aconym: str) -> str:
 
 def extract_countries_from_db() -> list:
     """function extracts countries from db"""
-    conn = sqlite3.connect('ecsel_database.db')
+    conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     cursor.execute("SELECT Acronym FROM Countries")
     countries = cursor.fetchall()
@@ -35,7 +37,7 @@ def extract_countries_from_db() -> list:
 @st.cache_resource
 def country_anagram_to_full_name(anagram: str) -> str:
     """function maps countries anagram to full name"""
-    conn = sqlite3.connect('ecsel_database.db')
+    conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     cursor.execute("SELECT Country FROM countries WHERE Acronym = ?", (anagram,))
     full_name = cursor.fetchall()
@@ -46,7 +48,7 @@ def country_anagram_to_full_name(anagram: str) -> str:
 @st.cache_data
 def generate_dataframe(country: str) -> pd.DataFrame:
     """function generates dataframe for participants and orders by grants"""
-    conn = sqlite3.connect('ecsel_database.db')
+    conn = sqlite3.connect(DATABASE)
     query = """SELECT shortName, name, activityType, organizationURL, SUM(ecContribution)
                FROM participants
                WHERE country = ?
@@ -63,7 +65,7 @@ def generate_dataframe(country: str) -> pd.DataFrame:
 
 def generate_dataframe_project_coordinators(country: str) -> pd.DataFrame:
     """function generates dataframe for project coordinators"""
-    conn = sqlite3.connect('ecsel_database.db')
+    conn = sqlite3.connect(DATABASE)
     query = """SELECT shortName, name, activityType, projectAcronym
                FROM participants
                WHERE country = ? AND role = 'coordinator'"""
@@ -78,7 +80,7 @@ def generate_dataframe_project_coordinators(country: str) -> pd.DataFrame:
 
 def generate_dataframe_10_most_active_countries() -> pd.DataFrame:
     """function generates dataframe for 10 most active countries"""
-    conn = sqlite3.connect('ecsel_database.db')
+    conn = sqlite3.connect(DATABASE)
     query = """SELECT country, SUM(ecContribution)
                FROM participants
                GROUP BY country

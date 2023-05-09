@@ -49,6 +49,10 @@ class TestCreateDB(unittest.TestCase):
         sql_to_dataframe = pd.read_sql_query("SELECT * FROM test_table", conn)
         sql_to_dataframe = sql_to_dataframe.drop(columns=['index'])
         self.assertTrue(test_df.equals(sql_to_dataframe))
+        conn.execute("DROP TABLE test_table")
+        conn.commit()
+        conn.close()
+
 
 class TestFinal(unittest.TestCase):
     """
@@ -64,6 +68,21 @@ class TestFinal(unittest.TestCase):
         self.assertRaises(ValueError, final.validate_country_acronym, 'FRANCE')
         self.assertRaises(ValueError, final.validate_country_acronym, 'F')
         self.assertRaises(ValueError, final.validate_country_acronym, 'XY')
+
+    @patch("final.DATABASE", FAKE_DATABASE)
+    def test_extract_countries_from_db(self):
+        """
+        Test the content of the output of the function extract_countries_from_db
+        """
+        test_list = ['FR', 'DE', 'IT']
+        conn = sq.connect(FAKE_DATABASE)
+        test_df = pd.DataFrame({'Acronym': test_list})
+        test_df.to_sql('countries', conn, if_exists='replace', index=False)
+        extract_countries_from_db = final.extract_countries_from_db()
+        self.assertEqual(extract_countries_from_db, test_list)
+        conn.execute("DROP TABLE countries")
+        conn.commit()
+        conn.close()
 
 if __name__ == '__main__':
     unittest.main()
