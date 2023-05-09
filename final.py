@@ -4,8 +4,8 @@ TODO: Add more here
 """
 import sqlite3
 import streamlit as st
-import createdb
 import pandas as pd
+import createdb
 
 
 def validate_country_acronym(aconym: str) -> str:
@@ -42,17 +42,22 @@ def country_anagram_to_full_name(anagram: str) -> str:
 def generate_dataframe(country: str) -> pd.DataFrame:
     """function generates dataframe"""
     conn = sqlite3.connect('ecsel_database.db')
-    df = pd.read_sql("SELECT shortName, name, activityType, organizationURL, SUM(ecContribution) FROM participants WHERE country = ? GROUP BY shortName", conn, params=(country,))
-    df = df.sort_values(by=['SUM(ecContribution)'], ascending=False)
+    query = """SELECT shortName, name, activityType, organizationURL, SUM(ecContribution)
+               FROM participants
+               WHERE country = ?
+               GROUP BY shortName"""
+    df_participants = pd.read_sql(query, conn, params=(country,))
+    df_participants = df_participants.sort_values(by=['SUM(ecContribution)'], ascending=False)
     conn.close()
-    return df
+    return df_participants
 
 if __name__ == '__main__':
     st.set_page_config(page_title="Partner Search App", page_icon="assets/logo-ecsel.png")
     st.image("assets/kdtju.png")
     st.title("Partner Search App")
     st.write("Antoine Colinet & Bence Kolonics")
-    selected_country = st.selectbox("Choose a country :", extract_countries_from_db(), format_func=country_anagram_to_full_name)
+    selected_country = st.selectbox("Choose a country :", extract_countries_from_db(),
+                                    format_func=country_anagram_to_full_name)
 
     st.subheader(f"Participants in {country_anagram_to_full_name(selected_country)}")
     st.dataframe(generate_dataframe(selected_country), use_container_width=True)
