@@ -48,6 +48,11 @@ def generate_dataframe(country: str) -> pd.DataFrame:
                GROUP BY shortName"""
     df_participants = pd.read_sql(query, conn, params=(country,))
     df_participants = df_participants.sort_values(by=['SUM(ecContribution)'], ascending=False)
+    df_participants = df_participants.rename(columns={'shortName': 'Short Name',
+                                                        'name': 'Name',
+                                                        'activityType': 'Activity Type',
+                                                        'organizationURL': 'Organization URL',
+                                                        'SUM(ecContribution)': 'Grants'})
     conn.close()
     return df_participants
 
