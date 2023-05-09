@@ -84,5 +84,22 @@ class TestFinal(unittest.TestCase):
         conn.commit()
         conn.close()
 
+    @patch("final.DATABASE", FAKE_DATABASE)
+    def test_country_anagram_to_full_name(self):
+        """
+        Test the content of the output of the function country_anagram_to_full_name
+        """
+        test_list = ['FR', 'DE', 'IT']
+        conn = sq.connect(FAKE_DATABASE)
+        test_df = pd.DataFrame({'Acronym': test_list, 'Country': ['France', 'Germany', 'Italy']})
+        test_df.to_sql('countries', conn, if_exists='replace', index=False)
+        self.assertEqual(final.country_anagram_to_full_name('FR'), "France")
+        self.assertEqual(final.country_anagram_to_full_name('DE'), "Germany")
+        self.assertEqual(final.country_anagram_to_full_name('IT'), "Italy")
+        conn.execute("DROP TABLE countries")
+        conn.commit()
+        conn.close()
+
+
 if __name__ == '__main__':
     unittest.main()
