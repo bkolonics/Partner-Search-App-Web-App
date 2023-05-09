@@ -5,6 +5,7 @@ TODO: Add more here
 import sqlite3
 import streamlit as st
 import createdb
+import pandas as pd
 
 
 def validate_country_acronym(aconym: str) -> str:
@@ -38,12 +39,10 @@ def country_anagram_to_full_name(anagram: str) -> str:
     conn.close()
     return full_name[0]
 
-def generate_dataframe(country: str) -> list:
-    """function generates dataframe"""
+def generate_dataframe(country: str) -> pd.DataFrame:
+    """Function generates dataframe."""
     conn = sqlite3.connect('ecsel_database.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT shortName, name, activityType, organizationURL, SUM(ecContribution) FROM participants WHERE country = ? GROUP BY shortName", (country,))
-    df = cursor.fetchall()
+    df = pd.read_sql("SELECT shortName, name, activityType, organizationURL, SUM(ecContribution) FROM participants WHERE country = ? GROUP BY shortName ORDER BY SUM(ecContribution)", conn, params=(country,))
     conn.close()
     return df
 
