@@ -97,6 +97,7 @@ if __name__ == '__main__':
     st.image("assets/kdtju.png")
     st.title("Partner Search App")
     st.write("Antoine Colinet & Bence Kolonics")
+    st.markdown("[Github Repo](https://github.com/bkolonics/Partner-Search-App-Web-App)")
     selected_country = st.selectbox("Choose a country :", extract_countries_from_db(),
                                     format_func=country_anagram_to_full_name)
 
